@@ -1,0 +1,151 @@
+<!Doctype html>
+<!-- я всего лишь отредактировал и модифицировал скрипт, первоначальный
+js код был найден на просторах интернета arhipki -->
+<html lang="ru">
+<head>
+    <!-- если на тильду,то от сюда и до  -->
+    <meta charset="utf-8"> <!-- что бы убрать кракозябры(кодировку задаю)-->
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- то бы сделать адаптивность под мобилки -->
+    <meta name="author" content="arhipki"> <!-- типо задаю авторство -->
+    <meta name="description" content="калькулятор суммы кредитования">
+    <meta name="keywords" content="......">
+    <title>Калькулятор</title>
+    <!-- сюда можно удалять код -->
+<style>
+    form {
+        background-color: #fff; /* задний цвет формы */
+        border-radius: 24px; /* скругление формы(обводки)*/
+        padding: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        color: #555;
+    }
+
+    input[type="number"] {
+        width: 98%;
+        padding: 10px;
+        border-radius: 32px;
+        border: none;
+        background-color: #f2f2f2;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+
+    input[type="submit"] {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 10px 10px;
+        border: none;
+        border-radius: 32px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #3e8e41;
+    }
+
+    .result {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        margin-top: 10px;
+    }
+
+    .result h2 {
+        margin-top: 0;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .result p {
+        font-size: 20px;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    .sum {
+        color: #4caf50;
+        font-weight: bold;
+    }
+
+    .sum::after {
+        content: "\20BD";
+        margin-left: 5px;
+    }
+</style>
+
+</head>
+<body>
+
+<form id="loan-form">
+    <fieldset>
+        <legend>Калькулятор</legend>
+    <label>Сумма кредита:</label>
+    <input type="number" id="amount" placeholder="Введите сумму кредита" required>
+
+    <label>Процентная ставка:</label>
+    <input type="number" step="0.01" id="interest" placeholder="Введите процентную ставку" required>
+
+    <label>Срок погашения:</label>
+    <input type="number" id="years" placeholder="Введите срок погашения в годах" required>
+
+    <input type="submit" value="Рассчитать">
+    </fieldset>
+</form>
+
+<!-- Вывод результата -->
+<div id="results" class="result"></div>
+<script type="text/javascript">
+    /* Функция для расчета ежемесячного платежа */
+    function calculatePayment() {
+        /* Получаем входные значения */
+        var amount = document.getElementById("amount").value;
+        var interest = document.getElementById("interest").value;
+        var years = document.getElementById("years").value;
+
+        /* Рассчитываем ежемесячную процентную ставку и количество платежей */
+        var monthlyInterest = interest / 100 / 12;
+        var payments = years * 12;
+
+        /* Рассчитываем ежемесячный платеж */
+        var x = Math.pow(1 + monthlyInterest, payments);
+        var monthlyPayment = (amount * x * monthlyInterest) / (x - 1);
+
+        /* Округляем ежемесячный платеж до двух знаков после запятой */
+        monthlyPayment = monthlyPayment.toFixed(2);
+
+        /* Рассчитываем общую сумму платежа */
+        var totalPayment = (monthlyPayment * payments).toFixed(2);
+
+        /* Рассчитаем сумму переплат */
+        var totalInterest = (totalPayment - amount).toFixed(2);
+
+        /* Показываем результаты */
+        var html = "<h2>Результаты</h2>";
+        html +=
+            "<p>Ежемесячный платеж: <span class='sum'>" +
+            monthlyPayment +
+            "</span></p>";
+        html +=
+            "<p>Общая сумма платежа: <span class='sum'>" + totalPayment + "</span></p>";
+        html += "<p>Переплата: <span class='sum'>" + totalInterest + "</span></p>";
+
+        /* Обновляем раздел результатов */
+        document.getElementById("results").innerHTML = html;
+    }
+
+    /* Прикрепляем функцию расчета платежа к событию отправки формы */
+    document.getElementById("loan-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        calculatePayment();
+    });
+
+</script>
+</body>
+</html>
